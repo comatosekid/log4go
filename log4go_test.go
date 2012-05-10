@@ -266,8 +266,8 @@ func TestLogOutput(t *testing.T) {
 
 	// Send some log messages
 	l.Log(CRITICAL, "testsrc1", fmt.Sprintf("This message is level %d", int(CRITICAL)))
-	l.Logf(ERROR, "This message is level %v", ERROR)
-	l.Logf(WARNING, "This message is level %s", WARNING)
+	l.Logf(ERROR, "TEST", "This message is level %v", ERROR)
+	l.Logf(WARNING, "TEST", "This message is level %s", WARNING)
 	l.Logc(INFO, func() string { return "This message is level INFO" })
 	l.Notice("This message is level %d", int(NOTICE))
 	l.Debug("This message is level %s", DEBUG)
@@ -298,13 +298,13 @@ func TestCountMallocs(t *testing.T) {
 		sl.Log(WARNING, "here", "This is a WARNING message")
 	}
 	for i := 0; i < N; i++ {
-		sl.Logf(WARNING, "%s is a log message with level %s", "This", WARNING)
+		sl.Logf(WARNING, "TEST", "%s is a log message with level %s", "This", WARNING)
 	}
 	for i := 0; i < N; i++ {
 		sl.Log(DEBUG, "here", "This is a DEBUG log message")
 	}
 	for i := 0; i < N; i++ {
-		sl.Logf(DEBUG, "%s is a log message with level %s", "This", DEBUG)
+		sl.Logf(DEBUG, "TEST", "%s is a log message with level %s", "This", DEBUG)
 	}
 }
 

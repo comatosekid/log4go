@@ -193,7 +193,7 @@ func (log Logger) AddFilter(name string, lvl LogLevel, writer LogWriter) Logger 
 
 /******* Logging *******/
 // Send a formatted log message internally
-func (log Logger) intLogf(lvl LogLevel, format string, args ...interface{}) {
+func (log Logger) intLogf2(lvl LogLevel, src string, format string, args ...interface{}) {
 	skip := true
 	prefix := ""
 
@@ -210,10 +210,11 @@ func (log Logger) intLogf(lvl LogLevel, format string, args ...interface{}) {
 	}
 
 	// Determine caller func
-	pc, _, lineno, ok := runtime.Caller(2)
-	src := ""
-	if ok {
-		src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
+	if src == "" {
+		pc, _, lineno, ok := runtime.Caller(2)
+		if ok {
+			src = fmt.Sprintf("%s:%d", runtime.FuncForPC(pc).Name(), lineno)
+		}
 	}
 	msg := format
 	if len(args) > 0 {
@@ -235,6 +236,11 @@ func (log Logger) intLogf(lvl LogLevel, format string, args ...interface{}) {
 		}
 		filt.LogWrite(rec)
 	}
+}
+
+func (log Logger) intLogf(lvl LogLevel, format string, args ...interface{}) {
+	src := ""
+	log.intLogf2(lvl, src, format, args)
 }
 
 // Send a closure log message internally
@@ -308,10 +314,11 @@ func (log Logger) Log(lvl LogLevel, source, message string) {
 	}
 }
 
-// Logf logs a formatted log message at the given log level, using the caller as
+// Logf logs a formatted log message at the given log level, and now the source
+// can be provided.  If the source is an empty string, try to use the caller as
 // its source.
-func (log Logger) Logf(lvl LogLevel, format string, args ...interface{}) {
-	log.intLogf(lvl, format, args...)
+func (log Logger) Logf(lvl LogLevel, src string, format string, args ...interface{}) {
+	log.intLogf2(lvl, src, format, args...)
 }
 
 // Logc logs a string returned by the closure at the given log level, using the caller as

@@ -94,8 +94,8 @@ func Log(lvl LogLevel, source, message string) {
 
 // Send a formatted log message easily
 // Wrapper for (*Logger).Logf
-func Logf(lvl LogLevel, format string, args ...interface{}) {
-	Global.intLogf(lvl, format, args...)
+func Logf(lvl LogLevel, src string, format string, args ...interface{}) {
+	Global.intLogf2(lvl, src, format, args...)
 }
 
 // Send a closure log message
