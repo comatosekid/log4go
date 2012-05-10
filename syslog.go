@@ -57,11 +57,6 @@ func connectSyslogDaemon() (sock net.Conn, err error) {
 
 func NewSysLogWriter(facility int) (w SysLogWriter) {
 	offset := facility * 8
-	host, err := os.Hostname()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "cannot obtain hostname: %s\n", err.Error())
-		host = "unknown"
-	}
 	sock, err := connectSyslogDaemon()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "NewSysLogWriter: %s\n", err.Error())
@@ -81,7 +76,7 @@ func NewSysLogWriter(facility int) (w SysLogWriter) {
 				timestrAt = rec.Created.Unix()
 				timestr = time.Unix(timestrAt, 0).UTC().Format(time.RFC3339)
 			}
-			fmt.Fprintf(sock, "<%d>%s %s %s: %s\n", offset+int(rec.Level), timestr, host, rec.Prefix, rec.Message)
+			fmt.Fprintf(sock, "<%d>%s: %s %s %s: %s\n", offset+int(rec.Level), rec.Source, timestr, rec.Level.String(), rec.Prefix, rec.Message)
 		}
 	}()
 	return
